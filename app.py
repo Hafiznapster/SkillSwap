@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify, render_template, redirect, url_for
 from backend.routes.auth import auth_bp
 from flask_sqlalchemy import SQLAlchemy
-from backend.db import db
+from backend.app import db
 
 app = Flask(__name__,
             template_folder='templates',  # Use relative path
@@ -21,9 +21,8 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize database with app
 db.init_app(app)
 
-# Create tables before first request
-@app.before_first_request
-def create_tables():
+# Create tables
+with app.app_context():
     db.create_all()
 
 # Add debug route

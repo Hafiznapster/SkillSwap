@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_cors import CORS
-from config import Config
+from backend.config import Config
 import os
 
 db = SQLAlchemy()
