@@ -1,0 +1,509 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Student Skill Exchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-page {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        overflow: hidden;
+    }
+    
+    .register-card {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        max-width: 500px;
+        width: 100%;
+        position: relative;
+        z-index: 10;
+        transition: all 0.3s ease;
+        animation: fadeIn 1s ease forwards;
+        margin: 2rem 0;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .register-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .register-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .register-header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .register-header p {
+        color: #6c757d;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(52, 70, 117, 0.2);
+        border-color: var(--primary-color);
+    }
+    
+    .floating-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        padding: 12px 15px;
+        pointer-events: none;
+        transform-origin: 0 0;
+        transition: all 0.3s ease;
+        color: #6c757d;
+    }
+    
+    .form-control:focus + .floating-label,
+    .form-control:not(:placeholder-shown) + .floating-label {
+        transform: translateY(-20px) scale(0.8);
+        color: var(--primary-color);
+    }
+    
+    .register-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: all 0.5s ease;
+    }
+    
+    .register-btn:hover::before {
+        left: 100%;
+    }
+    
+    .register-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(52, 70, 117, 0.3);
+    }
+    
+    .form-field-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus ~ .form-field-icon {
+        color: var(--primary-color);
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .login-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Wave Animation */
+    .wave-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        overflow: hidden;
+        z-index: 1;
+        pointer-events: none;
+    }
+    
+    .wave {
+        position: absolute;
+        width: 200%;
+        height: 200%;
+        top: -50%;
+        left: -50%;
+        border-radius: 40%;
+        animation: wave 25s infinite linear;
+        opacity: 0.1;
+        background: rgba(52, 70, 117, 0.2);
+    }
+    
+    .wave:nth-child(2) {
+        animation: wave 18s infinite linear reverse;
+        opacity: 0.15;
+        top: -55%;
+    }
+    
+    .wave:nth-child(3) {
+        animation: wave 22s infinite linear;
+        opacity: 0.08;
+        top: -60%;
+    }
+    
+    @keyframes wave {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    
+    /* Gradient Orbs */
+    .orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(15px);
+        animation: orbFloat 15s infinite ease-in-out;
+    }
+    
+    .orb-1 {
+        width: 150px;
+        height: 150px;
+        background: radial-gradient(circle at 30% 30%, rgba(94, 114, 228, 0.3), rgba(52, 70, 117, 0.1));
+        top: 20%;
+        right: 15%;
+        animation-delay: 0s;
+    }
+    
+    .orb-2 {
+        width: 180px;
+        height: 180px;
+        background: radial-gradient(circle at 70% 70%, rgba(17, 205, 239, 0.2), rgba(94, 114, 228, 0.1));
+        bottom: 10%;
+        left: 10%;
+        animation-delay: 5s;
+    }
+    
+    .orb-3 {
+        width: 100px;
+        height: 100px;
+        background: radial-gradient(circle at 40% 40%, rgba(87, 198, 185, 0.2), rgba(52, 70, 117, 0.05));
+        top: 30%;
+        left: 20%;
+        animation-delay: 8s;
+    }
+    
+    @keyframes orbFloat {
+        0%, 100% {
+            transform: translateY(0) translateX(0);
+        }
+        33% {
+            transform: translateY(-30px) translateX(20px);
+        }
+        66% {
+            transform: translateY(20px) translateX(-10px);
+        }
+    }
+    
+    /* Sparkles */
+    .sparkles-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 2;
+        pointer-events: none;
+    }
+    
+    .sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.7);
+        box-shadow: 0 0 10px 2px rgba(94, 114, 228, 0.3);
+        animation: sparkle-animation linear infinite;
+    }
+    
+    @keyframes sparkle-animation {
+        0% {
+            opacity: 0;
+            transform: scale(0);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1);
+        }
+        100% {
+            opacity: 0;
+            transform: scale(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-page">
+    <!-- Gentle wave animation -->
+    <div class="wave-container">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+    
+    <!-- Gradient orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    
+    <!-- Sparkles container -->
+    <div class="sparkles-container" id="sparkles"></div>
+    
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="register-card" data-aos="fade-up">
+                    <div class="register-header">
+                        <h1>Create Account</h1>
+                        <p>Join our community of students to exchange skills!</p>
+                    </div>
+                    
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <input type="text" class="form-control" id="username" name="username" placeholder=" " required>
+                            <label for="username" class="floating-label">Username</label>
+                            <div class="form-field-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="email" class="form-control" id="email" name="email" placeholder=" " required>
+                            <label for="email" class="floating-label">Email Address</label>
+                            <div class="form-field-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="password" name="password" placeholder=" " required>
+                            <label for="password" class="floating-label">Password</label>
+                            <div class="form-field-icon">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder=" " required>
+                            <label for="confirmPassword" class="floating-label">Confirm Password</label>
+                            <div class="form-field-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn register-btn">
+                            <i class="fas fa-user-plus me-2"></i> Register
+                        </button>
+                    </form>
+                    
+                    <div class="login-link">
+                        Already have an account? <a href="/login">Login</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create sparkles
+        const sparklesContainer = document.getElementById('sparkles');
+        const numberOfSparkles = 30;
+        
+        for (let i = 0; i < numberOfSparkles; i++) {
+            createSparkle(sparklesContainer);
+        }
+        
+        // Form submission handling
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match!', 'danger');
+                return;
+            }
+            
+            // Send registration request
+            fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    email,
+                    password
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Registration failed');
+                }
+            })
+            .then(data => {
+                showAlert('Registration successful! Please log in.', 'success');
+                setTimeout(() => {
+                    window.location.href = '/login';
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Registration failed. Please try again.', 'danger');
+            });
+        });
+    });
+    
+    function createSparkle(container) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+        
+        // Random positioning
+        const posX = Math.random() * window.innerWidth;
+        const posY = Math.random() * window.innerHeight;
+        
+        // Random size (2-4px)
+        const size = Math.random() * 2 + 2;
+        
+        // Random animation duration (3-6s)
+        const duration = Math.random() * 3 + 3;
+        
+        // Set styles
+        sparkle.style.left = `${posX}px`;
+        sparkle.style.top = `${posY}px`;
+        sparkle.style.width = `${size}px`;
+        sparkle.style.height = `${size}px`;
+        sparkle.style.animationDuration = `${duration}s`;
+        
+        // Add to container
+        container.appendChild(sparkle);
+        
+        // Remove and recreate sparkle after animation ends
+        setTimeout(() => {
+            sparkle.remove();
+            createSparkle(container);
+        }, duration * 1000);
+    }
+    
+    // Toast alerts function
+    function showAlert(message, type) {
+        // Create toast container if it doesn't exist
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+        
+        // Create toast element
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        
+        // Toast content
+        toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas ${getAlertIcon(type)} me-2"></i> ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        
+        // Add to container
+        toastContainer.appendChild(toastEl);
+        
+        // Bootstrap toast initialization
+        const toast = new bootstrap.Toast(toastEl, {
+            animation: true,
+            autohide: true,
+            delay: 5000
+        });
+        
+        toast.show();
+        
+        // Remove toast after it's hidden
+        toastEl.addEventListener('hidden.bs.toast', function() {
+            this.remove();
+        });
+    }
+    
+    function getAlertIcon(type) {
+        switch(type) {
+            case 'success': return 'fa-check-circle';
+            case 'danger': return 'fa-exclamation-circle';
+            case 'warning': return 'fa-exclamation-triangle';
+            case 'info': return 'fa-info-circle';
+            default: return 'fa-bell';
+        }
+    }
+</script>
+{% endblock %} 

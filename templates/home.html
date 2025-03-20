@@ -1,0 +1,412 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Student Skill Exchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    #hero-canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+    }
+    
+    .hero-section {
+        position: relative;
+        overflow: hidden;
+        padding: 100px 0;
+        background: linear-gradient(135deg, #4361ee, #3a0ca3);
+        color: white;
+        border-radius: 15px;
+        margin-bottom: 50px;
+    }
+    
+    .hero-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .statistics-card {
+        border-radius: 10px;
+        text-align: center;
+        padding: 25px 15px;
+        background-color: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+    
+    .statistics-card:hover {
+        transform: translateY(-10px);
+        background-color: rgba(255, 255, 255, 0.15);
+    }
+    
+    .statistics-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #fff, #90e0ef);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .cta-btn {
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        border-radius: 30px;
+        letter-spacing: 0.5px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    .testimonial-card {
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: var(--box-shadow-medium);
+    }
+    
+    .testimonial-img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid var(--primary-color);
+    }
+    
+    .rating-stars {
+        color: #ffc107;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section with 3D Background -->
+<div class="hero-section mb-5">
+    <canvas id="hero-canvas"></canvas>
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6" data-aos="fade-right">
+                <h1 class="display-4 fw-bold mb-3">Learn. Teach. Grow.</h1>
+                <p class="lead mb-4">Share your skills and learn from others on our innovative student skill exchange platform.</p>
+                <div class="d-flex gap-3">
+                    <a href="/register" class="btn btn-light cta-btn">
+                        <i class="fas fa-user-plus me-2"></i> Join Now
+                    </a>
+                    <a href="/about" class="btn btn-outline-light cta-btn">
+                        <i class="fas fa-info-circle me-2"></i> Learn More
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 mt-5 mt-lg-0" data-aos="fade-left">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="statistics-card">
+                            <div class="statistics-value">500+</div>
+                            <h5>Active Students</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="statistics-card">
+                            <div class="statistics-value">1,200+</div>
+                            <h5>Skills Shared</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="statistics-card">
+                            <div class="statistics-value">3,000+</div>
+                            <h5>Sessions Completed</h5>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="statistics-card">
+                            <div class="statistics-value">4.8</div>
+                            <h5>Average Rating</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works Section -->
+<div class="container mb-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="fw-bold">How It Works</h2>
+        <p class="text-muted">Exchanging skills has never been easier</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="100">
+            <div class="text-center card-3d h-100 p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-user-edit"></i>
+                </div>
+                <h4>Create Profile</h4>
+                <p class="text-muted">Sign up and list skills you can teach and ones you want to learn</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="200">
+            <div class="text-center card-3d h-100 p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-handshake"></i>
+                </div>
+                <h4>Find Matches</h4>
+                <p class="text-muted">Our system matches you with other students based on complementary skills</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="300">
+            <div class="text-center card-3d h-100 p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h4>Schedule Sessions</h4>
+                <p class="text-muted">Arrange teaching or learning sessions at times that work for both of you</p>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4" data-aos="fade-up" data-aos-delay="400">
+            <div class="text-center card-3d h-100 p-4">
+                <div class="feature-icon mb-3">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h4>Exchange Skills</h4>
+                <p class="text-muted">Meet up, teach, learn, and build a community of skilled students</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Skills Section -->
+<div class="container mb-5">
+    <div class="row align-items-center mb-5">
+        <div class="col-lg-6" data-aos="fade-right">
+            <h2 class="fw-bold mb-4">Discover Popular Skills</h2>
+            <p class="text-muted mb-4">Explore the most sought-after skills on our platform. Whether you want to learn or teach, there's something for everyone.</p>
+            <a href="/skills" class="btn btn-primary">
+                <i class="fas fa-search me-2"></i> Explore All Skills
+            </a>
+        </div>
+        <div class="col-lg-6" data-aos="fade-left">
+            <div class="row">
+                <div class="col-6 mb-4">
+                    <div class="card h-100 float">
+                        <div class="card-body text-center">
+                            <i class="fas fa-code fa-3x text-primary mb-3"></i>
+                            <h5>Programming</h5>
+                            <p class="text-muted small">Python, JavaScript, Java</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-4">
+                    <div class="card h-100 float" style="animation-delay: 1s;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-language fa-3x text-primary mb-3"></i>
+                            <h5>Languages</h5>
+                            <p class="text-muted small">Spanish, French, Chinese</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-4">
+                    <div class="card h-100 float" style="animation-delay: 1.5s;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-paint-brush fa-3x text-primary mb-3"></i>
+                            <h5>Design</h5>
+                            <p class="text-muted small">UI/UX, Graphic Design</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 mb-4">
+                    <div class="card h-100 float" style="animation-delay: 2s;">
+                        <div class="card-body text-center">
+                            <i class="fas fa-calculator fa-3x text-primary mb-3"></i>
+                            <h5>Mathematics</h5>
+                            <p class="text-muted small">Calculus, Statistics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Testimonials Section -->
+<div class="container mb-5">
+    <div class="text-center mb-5" data-aos="fade-up">
+        <h2 class="fw-bold">What Students Say</h2>
+        <p class="text-muted">Hear from our community members</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="100">
+            <div class="testimonial-card h-100">
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <img src="https://randomuser.me/api/portraits/women/32.jpg" class="testimonial-img me-3" alt="Student">
+                        <div>
+                            <h5 class="mb-1">Sarah Johnson</h5>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0">"I've learned Spanish and graphic design through this platform. The time banking system is brilliant because I could teach programming and earn credits to learn other skills!"</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="200">
+            <div class="testimonial-card h-100">
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <img src="https://randomuser.me/api/portraits/men/45.jpg" class="testimonial-img me-3" alt="Student">
+                        <div>
+                            <h5 class="mb-1">David Chen</h5>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0">"As an international student, I was looking to improve my English. Through this platform, I found native speakers to practice with while I taught them mathematics. It's a win-win!"</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4" data-aos="zoom-in" data-aos-delay="300">
+            <div class="testimonial-card h-100">
+                <div class="card-body">
+                    <div class="d-flex mb-3">
+                        <img src="https://randomuser.me/api/portraits/women/65.jpg" class="testimonial-img me-3" alt="Student">
+                        <div>
+                            <h5 class="mb-1">Maria Rodriguez</h5>
+                            <div class="rating-stars">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="mb-0">"The platform is incredibly user-friendly and the matching algorithm works really well. I've met amazing people and learned valuable skills that complement my academic studies."</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call To Action Section -->
+<div class="container mb-5">
+    <div class="card card-3d" data-aos="flip-up">
+        <div class="card-body text-center p-5">
+            <h2 class="fw-bold mb-3">Ready to Start Learning?</h2>
+            <p class="mb-4">Join our community today and start exchanging skills with fellow students!</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/register" class="btn btn-primary btn-lg">
+                    <i class="fas fa-user-plus me-2"></i> Sign Up Now
+                </a>
+                <a href="/skills" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-lightbulb me-2"></i> Browse Skills
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Three.js animation for the hero section
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Three.js animation only if hero-canvas exists
+    const canvas = document.getElementById('hero-canvas');
+    if (!canvas) return;
+    
+    // Setup the scene
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    
+    const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        alpha: true,
+        antialias: true
+    });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    
+    // Create particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 1500;
+    
+    const posArray = new Float32Array(particlesCount * 3);
+    
+    for(let i = 0; i < particlesCount * 3; i++) {
+        // Position particles randomly in 3D space
+        posArray[i] = (Math.random() - 0.5) * 5;
+    }
+    
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    
+    // Create material
+    const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.005,
+        color: 0xffffff,
+        transparent: true,
+        opacity: 0.8
+    });
+    
+    // Create mesh
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    
+    // Set camera position
+    camera.position.z = 2;
+    
+    // Resize handler
+    window.addEventListener('resize', () => {
+        // Update sizes
+        camera.aspect = canvas.clientWidth / canvas.clientHeight;
+        camera.updateProjectionMatrix();
+        
+        // Update renderer
+        renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    });
+    
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Make particles rotate
+        particlesMesh.rotation.x += 0.0005;
+        particlesMesh.rotation.y += 0.0005;
+        
+        // Render
+        renderer.render(scene, camera);
+    }
+    
+    animate();
+    
+    // Interactive mouse movement effect
+    document.addEventListener('mousemove', (event) => {
+        // Get normalized device coordinates
+        const windowWidth = window.innerWidth;
+        const windowHeight = window.innerHeight;
+        
+        const mouseX = (event.clientX / windowWidth) * 2 - 1;
+        const mouseY = -(event.clientY / windowHeight) * 2 + 1;
+        
+        // Move particles slightly based on mouse position
+        particlesMesh.rotation.x += mouseY * 0.0001;
+        particlesMesh.rotation.y += mouseX * 0.0001;
+    });
+});
+</script>
+{% endblock %} 

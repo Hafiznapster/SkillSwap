@@ -1,0 +1,701 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile - Student Skill Exchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 3rem 0;
+        border-radius: 0 0 20px 20px;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 70px;
+    }
+    
+    .profile-header::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 0;
+    }
+    
+    .profile-header::after {
+        content: '';
+        position: absolute;
+        bottom: -70px;
+        left: -70px;
+        width: 250px;
+        height: 250px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        z-index: 0;
+    }
+    
+    .profile-picture-container {
+        position: relative;
+        margin-bottom: -60px;
+        z-index: 2;
+    }
+    
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 5px solid white;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        transition: all 0.5s ease;
+    }
+    
+    .profile-picture:hover {
+        transform: scale(1.05) rotate(5deg);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    }
+    
+    .edit-profile-icon {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+        width: 40px;
+        height: 40px;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .edit-profile-icon:hover {
+        transform: scale(1.1);
+        background-color: var(--secondary-color);
+    }
+    
+    .profile-header-content {
+        position: relative;
+        z-index: 1;
+    }
+    
+    .skill-card {
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+        position: relative;
+    }
+    
+    .skill-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+    
+    .skill-card-header {
+        padding: 15px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .skill-card-header::before {
+        content: '';
+        position: absolute;
+        top: -20px;
+        right: -20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: rgba(67, 97, 238, 0.1);
+    }
+    
+    .skill-level {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .skill-level.beginner {
+        background-color: var(--info-color);
+        color: white;
+    }
+    
+    .skill-level.intermediate {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .skill-level.advanced {
+        background-color: var(--success-color);
+        color: white;
+    }
+    
+    .skill-icon {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 15px;
+    }
+    
+    .timebank-balance {
+        font-size: 2.5rem;
+        font-weight: bold;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .activity-timeline {
+        position: relative;
+        margin-left: 20px;
+    }
+    
+    .activity-timeline::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 2px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-left: 30px;
+        margin-bottom: 25px;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -9px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background-color: white;
+        border: 2px solid var(--primary-color);
+        z-index: 1;
+    }
+    
+    .timeline-content {
+        background-color: white;
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .progress-container {
+        width: 100%;
+        height: 8px;
+        background-color: #e9ecef;
+        border-radius: 10px;
+        margin-bottom: 5px;
+        overflow: hidden;
+    }
+    
+    .progress-bar-custom {
+        height: 100%;
+        border-radius: 10px;
+        background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+        transition: width 1s ease;
+    }
+    
+    #portfolio3D {
+        height: 250px;
+        width: 100%;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Profile Header -->
+<div class="profile-header">
+    <div class="container">
+        <div class="row align-items-center profile-header-content">
+            <div class="col-md-3 text-center">
+                <div class="profile-picture-container" data-aos="zoom-in">
+                    <img src="{{ url_for('static', filename='images/default-profile.png') }}" id="profilePicture" alt="Profile Picture" class="profile-picture">
+                    <div class="edit-profile-icon" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                        <i class="fas fa-camera"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9" data-aos="fade-left">
+                <h2 class="mb-1" id="profileUsername">Loading...</h2>
+                <p class="mb-3" id="profileEmail">loading@example.com</p>
+                <p class="mb-0" id="profileBio">Bio loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-4 mb-4">
+            <!-- Time Bank Card -->
+            <div class="card card-3d h-100 mb-4" data-aos="fade-up">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-coins me-2"></i> Time Bank Balance</h5>
+                </div>
+                <div class="card-body text-center p-4">
+                    <div class="timebank-balance mb-3" id="timeBankBalance">0.0</div>
+                    <p class="text-muted">Available Hours</p>
+                    
+                    <div class="row text-center mt-4">
+                        <div class="col-6">
+                            <h5 class="text-success" id="earnedHours">0.0</h5>
+                            <p class="text-muted small">Earned Hours</p>
+                        </div>
+                        <div class="col-6">
+                            <h5 class="text-danger" id="spentHours">0.0</h5>
+                            <p class="text-muted small">Spent Hours</p>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6 class="mb-3">Recent Transactions</h6>
+                    <div id="recentTransactions">
+                        <!-- Recent transactions will be populated by JavaScript -->
+                    </div>
+                    
+                    <div class="mt-3">
+                        <a href="/timebank" class="btn btn-primary">
+                            <i class="fas fa-history me-2"></i> View All Transactions
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 3D Skills Portfolio -->
+            <div class="card mb-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-cube me-2"></i> Skills Portfolio</h5>
+                </div>
+                <div class="card-body p-0">
+                    <canvas id="portfolio3D"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Middle Column -->
+        <div class="col-lg-4 mb-4">
+            <!-- Teaching Skills -->
+            <div class="card h-100" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-chalkboard-teacher me-2"></i> Skills I Teach</h5>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addTeachingSkillModal">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="card-body p-3">
+                    <div id="teachingSkills">
+                        <!-- Teaching skills will be populated by JavaScript -->
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Column -->
+        <div class="col-lg-4 mb-4">
+            <!-- Learning Skills -->
+            <div class="card h-100" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i> Skills I Want to Learn</h5>
+                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#addLearningSkillModal">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <div class="card-body p-3">
+                    <div id="learningSkills">
+                        <!-- Learning skills will be populated by JavaScript -->
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Activity Timeline -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="card" data-aos="fade-up" data-aos-delay="400">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i> Recent Activity</h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="activity-timeline" id="recentActivity">
+                        <!-- Recent activity will be populated by JavaScript -->
+                        <div class="text-center p-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editProfileModalLabel">
+                    <i class="fas fa-user-edit me-2"></i> Edit Profile
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProfileForm">
+                    <div class="text-center mb-4">
+                        <img id="profilePreview" src="{{ url_for('static', filename='images/default-profile.png') }}" class="rounded-circle" width="100" height="100" alt="Profile Preview">
+                        <div class="mt-2">
+                            <label for="profilePictureUpload" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-camera me-2"></i> Change Photo
+                            </label>
+                            <input class="d-none" type="file" id="profilePictureUpload" accept="image/*">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editUsername" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="editUsername">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="editBio" class="form-label">Bio</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-quote-left"></i></span>
+                            <textarea class="form-control" id="editBio" rows="3"></textarea>
+                        </div>
+                        <div class="form-text">Tell others about yourself, your interests, and your background.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveProfileBtn">
+                    <i class="fas fa-save me-2"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Teaching Skill Modal -->
+<div class="modal fade" id="addTeachingSkillModal" tabindex="-1" aria-labelledby="addTeachingSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addTeachingSkillModalLabel">
+                    <i class="fas fa-chalkboard-teacher me-2"></i> Add Teaching Skill
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addTeachingSkillForm">
+                    <div class="mb-3">
+                        <label for="teachingSkill" class="form-label">Skill</label>
+                        <select class="form-select" id="teachingSkill" required>
+                            <!-- Skills will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="teachingProficiency" class="form-label">Proficiency Level</label>
+                        <div class="d-flex gap-2">
+                            <div class="form-check flex-grow-1">
+                                <input class="form-check-input" type="radio" name="teachingProficiency" id="teachingBeginner" value="beginner">
+                                <label class="form-check-label" for="teachingBeginner">
+                                    Beginner
+                                </label>
+                            </div>
+                            <div class="form-check flex-grow-1">
+                                <input class="form-check-input" type="radio" name="teachingProficiency" id="teachingIntermediate" value="intermediate" checked>
+                                <label class="form-check-label" for="teachingIntermediate">
+                                    Intermediate
+                                </label>
+                            </div>
+                            <div class="form-check flex-grow-1">
+                                <input class="form-check-input" type="radio" name="teachingProficiency" id="teachingAdvanced" value="advanced">
+                                <label class="form-check-label" for="teachingAdvanced">
+                                    Advanced
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveTeachingSkillBtn">
+                    <i class="fas fa-plus me-2"></i> Add Skill
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Learning Skill Modal -->
+<div class="modal fade" id="addLearningSkillModal" tabindex="-1" aria-labelledby="addLearningSkillModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addLearningSkillModalLabel">
+                    <i class="fas fa-graduation-cap me-2"></i> Add Learning Skill
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addLearningSkillForm">
+                    <div class="mb-3">
+                        <label for="learningSkill" class="form-label">Skill</label>
+                        <select class="form-select" id="learningSkill" required>
+                            <!-- Skills will be populated by JavaScript -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="learningProficiency" class="form-label">Current Level</label>
+                        <div class="d-flex gap-2">
+                            <div class="form-check flex-grow-1">
+                                <input class="form-check-input" type="radio" name="learningProficiency" id="learningBeginner" value="beginner" checked>
+                                <label class="form-check-label" for="learningBeginner">
+                                    Beginner
+                                </label>
+                            </div>
+                            <div class="form-check flex-grow-1">
+                                <input class="form-check-input" type="radio" name="learningProficiency" id="learningIntermediate" value="intermediate">
+                                <label class="form-check-label" for="learningIntermediate">
+                                    Intermediate
+                                </label>
+                            </div>
+                            <div class="form-check flex-grow-1">
+                                <input class="form-check-input" type="radio" name="learningProficiency" id="learningAdvanced" value="advanced">
+                                <label class="form-check-label" for="learningAdvanced">
+                                    Advanced
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveLearningSkillBtn">
+                    <i class="fas fa-plus me-2"></i> Add Skill
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
+<script>
+// Add 3D Skills Portfolio Visualization
+document.addEventListener('DOMContentLoaded', function() {
+    // Create the 3D portfolio visualization
+    const canvas = document.getElementById('portfolio3D');
+    if (!canvas) return;
+    
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0xf8f9fa);
+    
+    const camera = new THREE.PerspectiveCamera(75, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+    camera.position.z = 5;
+    
+    const renderer = new THREE.WebGLRenderer({
+        canvas: canvas,
+        antialias: true
+    });
+    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+    
+    // Add ambient light
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    // Add directional light
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(1, 1, 1);
+    scene.add(directionalLight);
+    
+    // Create skill spheres
+    const skillSpheres = [];
+    const colors = [0x4361ee, 0x3a0ca3, 0x4cc9f0, 0x2ec4b6, 0xf72585];
+    
+    // Function to create a skill sphere
+    function createSkillSphere(name, size, color, position) {
+        // Create sphere geometry
+        const geometry = new THREE.SphereGeometry(size, 32, 32);
+        
+        // Create material with glow effect
+        const material = new THREE.MeshPhongMaterial({
+            color: color,
+            shininess: 100,
+            transparent: true,
+            opacity: 0.8
+        });
+        
+        // Create mesh
+        const sphere = new THREE.Mesh(geometry, material);
+        sphere.position.set(position.x, position.y, position.z);
+        sphere.userData = { name: name, originalSize: size };
+        
+        // Add to scene and array
+        scene.add(sphere);
+        skillSpheres.push(sphere);
+        
+        return sphere;
+    }
+    
+    // Create initial spheres
+    createSkillSphere('Programming', 0.8, colors[0], { x: -2, y: 0.5, z: 0 });
+    createSkillSphere('Design', 0.6, colors[1], { x: -0.5, y: -1, z: 0 });
+    createSkillSphere('Languages', 0.7, colors[2], { x: 1, y: 0.8, z: 0 });
+    createSkillSphere('Mathematics', 0.5, colors[3], { x: 2, y: -0.5, z: 0 });
+    createSkillSphere('Music', 0.4, colors[4], { x: 0, y: 0, z: -1 });
+    
+    // Animation
+    function animate() {
+        requestAnimationFrame(animate);
+        
+        // Rotate spheres slowly
+        skillSpheres.forEach((sphere, index) => {
+            sphere.rotation.x += 0.005 * (index % 2 ? 1 : -1);
+            sphere.rotation.y += 0.007 * (index % 3 ? 1 : -1);
+            
+            // Make spheres float up and down
+            sphere.position.y += Math.sin(Date.now() * 0.001 + index) * 0.003;
+        });
+        
+        renderer.render(scene, camera);
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (!canvas) return;
+        const width = canvas.clientWidth;
+        const height = canvas.clientHeight;
+        
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+    });
+    
+    // Add mouse interactivity
+    canvas.addEventListener('mousemove', function(event) {
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = ((event.clientX - rect.left) / canvas.clientWidth) * 2 - 1;
+        const mouseY = -((event.clientY - rect.top) / canvas.clientHeight) * 2 + 1;
+        
+        // Create a ray from the camera and mouse position
+        const raycaster = new THREE.Raycaster();
+        raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), camera);
+        
+        // Check for intersections
+        const intersects = raycaster.intersectObjects(skillSpheres);
+        
+        // Reset all spheres to original size
+        skillSpheres.forEach(sphere => {
+            sphere.scale.set(1, 1, 1);
+        });
+        
+        // Highlight intersected sphere
+        if (intersects.length > 0) {
+            const sphere = intersects[0].object;
+            sphere.scale.set(1.2, 1.2, 1.2);
+            
+            // Update canvas title attribute to show skill name
+            canvas.title = sphere.userData.name;
+            canvas.style.cursor = 'pointer';
+        } else {
+            canvas.title = '';
+            canvas.style.cursor = 'default';
+        }
+    });
+    
+    // Start animation
+    animate();
+    
+    // Update spheres when user data is loaded
+    function updateSkillSpheres() {
+        // This would connect to your actual skills data
+        if (typeof loadTeachingSkills === 'function') {
+            const originalLoadTeachingSkills = loadTeachingSkills;
+            
+            loadTeachingSkills = function() {
+                originalLoadTeachingSkills.apply(this, arguments);
+                
+                // Update 3D visualization with real data
+                // This is a placeholder - you would need to adapt this to your actual data structure
+                setTimeout(() => {
+                    const teachingSkillsEl = document.getElementById('teachingSkills');
+                    if (teachingSkillsEl && teachingSkillsEl.children.length > 0 && !teachingSkillsEl.querySelector('.spinner-border')) {
+                        // Clear existing spheres
+                        for (let i = skillSpheres.length - 1; i >= 0; i--) {
+                            scene.remove(skillSpheres[i]);
+                        }
+                        skillSpheres.length = 0;
+                        
+                        // Create spheres based on actual skills
+                        const skillElements = teachingSkillsEl.querySelectorAll('.skill-card');
+                        skillElements.forEach((skillEl, index) => {
+                            const skillName = skillEl.querySelector('h6') ? skillEl.querySelector('h6').textContent : 'Skill';
+                            const level = skillEl.querySelector('.skill-level') ? skillEl.querySelector('.skill-level').textContent : 'beginner';
+                            
+                            // Size based on level
+                            let size = 0.5;
+                            if (level === 'intermediate') size = 0.6;
+                            if (level === 'advanced') size = 0.8;
+                            
+                            // Position in a circle
+                            const angle = (index / skillElements.length) * Math.PI * 2;
+                            const radius = 2;
+                            const x = Math.cos(angle) * radius;
+                            const y = Math.sin(angle) * radius;
+                            
+                            createSkillSphere(skillName, size, colors[index % colors.length], { x, y, z: 0 });
+                        });
+                    }
+                }, 1000);
+            };
+        }
+    }
+    
+    updateSkillSpheres();
+});
+</script>
+{% endblock %} 

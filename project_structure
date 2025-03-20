@@ -1,0 +1,19 @@
+student_skill_exchange/
+├── backend/
+│   ├── app/
+│   │   ├── __init__.py
+│   │   ├── models/
+│   │   ├── routes/
+│   │   ├── services/
+│   │   └── utils/
+│   ├── config.py
+│   ├── requirements.txt
+│   └── run.py
+├── frontend/
+│   ├── static/
+│   │   ├── css/
+│   │   ├── js/
+│   │   └── images/
+│   └── templates/
+└── instance/
+    └── database.db 

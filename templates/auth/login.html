@@ -1,0 +1,470 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Student Skill Exchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-page {
+        min-height: calc(100vh - 70px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+        overflow: hidden;
+    }
+    
+    .login-card {
+        background: #ffffff;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2.5rem;
+        max-width: 450px;
+        width: 100%;
+        position: relative;
+        z-index: 10;
+        transition: all 0.3s ease;
+        animation: fadeIn 1s ease forwards;
+    }
+    
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .login-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    }
+    
+    .login-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+    
+    .login-header h1 {
+        color: var(--primary-color);
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-header p {
+        color: #6c757d;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        box-shadow: 0 0 0 3px rgba(52, 70, 117, 0.2);
+        border-color: var(--primary-color);
+    }
+    
+    .floating-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        padding: 12px 15px;
+        pointer-events: none;
+        transform-origin: 0 0;
+        transition: all 0.3s ease;
+        color: #6c757d;
+    }
+    
+    .form-control:focus + .floating-label,
+    .form-control:not(:placeholder-shown) + .floating-label {
+        transform: translateY(-20px) scale(0.8);
+        color: var(--primary-color);
+    }
+    
+    .login-btn {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        border: none;
+        color: white;
+        font-weight: 600;
+        margin-top: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .login-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: all 0.5s ease;
+    }
+    
+    .login-btn:hover::before {
+        left: 100%;
+    }
+    
+    .login-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(52, 70, 117, 0.3);
+    }
+    
+    .form-field-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #6c757d;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus ~ .form-field-icon {
+        color: var(--primary-color);
+    }
+    
+    .register-link {
+        text-align: center;
+        margin-top: 1.5rem;
+    }
+    
+    .register-link a {
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    
+    .register-link a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Animation elements */
+    .animated-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    
+    .animated-shape {
+        position: absolute;
+        background: linear-gradient(135deg, rgba(52, 70, 117, 0.2), rgba(94, 114, 228, 0.1));
+        border-radius: 50%;
+        animation: float 15s infinite ease-in-out;
+    }
+    
+    .shape-1 {
+        width: 500px;
+        height: 500px;
+        top: -250px;
+        left: -100px;
+        animation-delay: 0s;
+    }
+    
+    .shape-2 {
+        width: 400px;
+        height: 400px;
+        top: 50%;
+        right: -200px;
+        animation-delay: 3s;
+    }
+    
+    .shape-3 {
+        width: 300px;
+        height: 300px;
+        bottom: -150px;
+        left: 10%;
+        animation-delay: 7s;
+    }
+    
+    .shape-4 {
+        width: 200px;
+        height: 200px;
+        top: 15%;
+        right: 10%;
+        animation-delay: 5s;
+    }
+    
+    .shape-5 {
+        width: 350px;
+        height: 350px;
+        bottom: 5%;
+        right: 5%;
+        animation-delay: 10s;
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0) rotate(0deg);
+        }
+        25% {
+            transform: translateY(-20px) rotate(5deg);
+        }
+        50% {
+            transform: translateY(0) rotate(0deg);
+        }
+        75% {
+            transform: translateY(20px) rotate(-5deg);
+        }
+    }
+    
+    /* Light particles */
+    .particles {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+    
+    .particle {
+        position: absolute;
+        width: 5px;
+        height: 5px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 50%;
+        animation: rise linear infinite;
+    }
+    
+    @keyframes rise {
+        0% {
+            transform: translateY(0) translateX(0);
+            opacity: 0;
+        }
+        25% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.8;
+        }
+        75% {
+            opacity: 0.6;
+        }
+        100% {
+            transform: translateY(-1000px) translateX(100px);
+            opacity: 0;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="login-page">
+    <!-- Animated background elements -->
+    <div class="animated-bg">
+        <div class="animated-shape shape-1"></div>
+        <div class="animated-shape shape-2"></div>
+        <div class="animated-shape shape-3"></div>
+        <div class="animated-shape shape-4"></div>
+        <div class="animated-shape shape-5"></div>
+        
+        <div class="particles" id="particles"></div>
+    </div>
+    
+    <div class="login-card">
+        <div class="login-header">
+            <h1>Welcome Back</h1>
+            <p>Sign in to continue your learning journey</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <input type="text" class="form-control" id="username" name="username" placeholder=" " required>
+                <label for="username" class="floating-label">Username or Email</label>
+                <div class="form-field-icon">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <input type="password" class="form-control" id="password" name="password" placeholder=" " required>
+                <label for="password" class="floating-label">Password</label>
+                <div class="form-field-icon">
+                    <i class="fas fa-lock"></i>
+                </div>
+            </div>
+            
+            <div class="d-flex justify-content-between mb-4">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <a href="/forgot-password" class="text-decoration-none" style="color: var(--primary-color)">Forgot password?</a>
+            </div>
+            
+            <button type="submit" class="btn login-btn">
+                <i class="fas fa-sign-in-alt me-2"></i> Login
+            </button>
+        </form>
+        
+        <div class="register-link">
+            Don't have an account? <a href="/register">Register</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Create gentle floating particles
+    document.addEventListener('DOMContentLoaded', function() {
+        const particlesContainer = document.getElementById('particles');
+        const numberOfParticles = 50;
+        
+        for (let i = 0; i < numberOfParticles; i++) {
+            createParticle(particlesContainer);
+        }
+        
+        // Form submission handling
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Send login request
+            fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Login failed');
+                }
+            })
+            .then(data => {
+                // Store token in localStorage
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('userId', data.user_id);
+                
+                // Show success message
+                showAlert('Login successful! Redirecting...', 'success');
+                
+                // Redirect to home page
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1500);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showAlert('Invalid username or password', 'danger');
+            });
+        });
+    });
+    
+    function createParticle(container) {
+        const particle = document.createElement('div');
+        particle.classList.add('particle');
+        
+        // Random positioning
+        const posX = Math.random() * window.innerWidth;
+        const posY = Math.random() * window.innerHeight;
+        
+        // Random size (1-4px)
+        const size = Math.random() * 3 + 1;
+        
+        // Random animation duration (15-30s)
+        const duration = Math.random() * 15 + 15;
+        
+        // Set styles
+        particle.style.left = `${posX}px`;
+        particle.style.top = `${posY}px`;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.animationDuration = `${duration}s`;
+        
+        // Add to container
+        container.appendChild(particle);
+        
+        // Remove and recreate particle after animation ends
+        setTimeout(() => {
+            particle.remove();
+            createParticle(container);
+        }, duration * 1000);
+    }
+    
+    // Toast alerts function
+    function showAlert(message, type) {
+        // Create toast container if it doesn't exist
+        let toastContainer = document.querySelector('.toast-container');
+        if (!toastContainer) {
+            toastContainer = document.createElement('div');
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            toastContainer.style.zIndex = '9999';
+            document.body.appendChild(toastContainer);
+        }
+        
+        // Create toast element
+        const toastEl = document.createElement('div');
+        toastEl.className = `toast align-items-center text-white bg-${type} border-0`;
+        toastEl.setAttribute('role', 'alert');
+        toastEl.setAttribute('aria-live', 'assertive');
+        toastEl.setAttribute('aria-atomic', 'true');
+        
+        // Toast content
+        toastEl.innerHTML = `
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="fas ${getAlertIcon(type)} me-2"></i> ${message}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        `;
+        
+        // Add to container
+        toastContainer.appendChild(toastEl);
+        
+        // Bootstrap toast initialization
+        const toast = new bootstrap.Toast(toastEl, {
+            animation: true,
+            autohide: true,
+            delay: 5000
+        });
+        
+        toast.show();
+        
+        // Remove toast after it's hidden
+        toastEl.addEventListener('hidden.bs.toast', function() {
+            this.remove();
+        });
+    }
+    
+    function getAlertIcon(type) {
+        switch(type) {
+            case 'success': return 'fa-check-circle';
+            case 'danger': return 'fa-exclamation-circle';
+            case 'warning': return 'fa-exclamation-triangle';
+            case 'info': return 'fa-info-circle';
+            default: return 'fa-bell';
+        }
+    }
+</script>
+{% endblock %} 

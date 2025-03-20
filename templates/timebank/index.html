@@ -1,0 +1,718 @@
+{% extends 'base.html' %}
+
+{% block title %}Time Bank - Student Skill Exchange{% endblock %}
+
+{% block extra_css %}
+<style>
+    .time-balance-card {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        padding: 2rem;
+        box-shadow: var(--box-shadow-lg);
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .time-balance-card::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+    }
+    
+    .time-balance-card::after {
+        content: '';
+        position: absolute;
+        bottom: -60px;
+        left: -60px;
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .balance-value {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .balance-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1.5rem;
+    }
+    
+    .balance-details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .balance-detail-item {
+        text-align: center;
+    }
+    
+    .balance-detail-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+    }
+    
+    .balance-detail-label {
+        font-size: 0.85rem;
+        opacity: 0.8;
+    }
+    
+    .transaction-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+        box-shadow: var(--box-shadow-md);
+        margin-bottom: 1.5rem;
+        transition: var(--transition-normal);
+    }
+    
+    .transaction-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--box-shadow-lg);
+    }
+    
+    .transaction-list {
+        max-height: 500px;
+        overflow-y: auto;
+    }
+    
+    .transaction-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid var(--gray-200);
+        transition: var(--transition-normal);
+    }
+    
+    .transaction-item:last-child {
+        border-bottom: none;
+    }
+    
+    .transaction-item:hover {
+        background-color: var(--gray-100);
+    }
+    
+    .transaction-icon {
+        width: 45px;
+        height: 45px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.25rem;
+    }
+    
+    .credit-icon {
+        background-color: rgba(46, 206, 137, 0.15);
+        color: var(--success-color);
+    }
+    
+    .debit-icon {
+        background-color: rgba(245, 54, 92, 0.15);
+        color: var(--danger-color);
+    }
+    
+    .adjustment-icon {
+        background-color: rgba(94, 114, 228, 0.15);
+        color: var(--accent-color);
+    }
+    
+    .transaction-info {
+        flex: 1;
+    }
+    
+    .transaction-title {
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+    }
+    
+    .transaction-details {
+        font-size: 0.85rem;
+        color: var(--gray-600);
+    }
+    
+    .transaction-amount {
+        font-weight: 600;
+        margin-left: 1rem;
+    }
+    
+    .credit-amount {
+        color: var(--success-color);
+    }
+    
+    .debit-amount {
+        color: var(--danger-color);
+    }
+    
+    .transaction-filter {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background-color: white;
+        border-radius: 50px;
+        box-shadow: var(--box-shadow-sm);
+        margin-bottom: 1.5rem;
+    }
+    
+    .filter-btn {
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: none;
+        background: none;
+        color: var(--gray-600);
+        transition: var(--transition-normal);
+        margin-right: 0.5rem;
+    }
+    
+    .filter-btn.active {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .filter-btn:hover:not(.active) {
+        background-color: var(--gray-100);
+    }
+    
+    .stats-card {
+        border-radius: 12px;
+        overflow: hidden;
+        border: none;
+        box-shadow: var(--box-shadow-md);
+        margin-bottom: 1.5rem;
+        height: 100%;
+        transition: var(--transition-normal);
+    }
+    
+    .stats-card:hover {
+        transform: translateY(-5px);
+        box-shadow: var(--box-shadow-lg);
+    }
+    
+    .stats-card .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 1.5rem;
+    }
+    
+    .stats-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stats-label {
+        text-align: center;
+        color: var(--gray-600);
+    }
+    
+    .stats-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+    
+    /* Circular progress bar */
+    .circular-progress {
+        position: relative;
+        width: 120px;
+        height: 120px;
+        margin-bottom: 1rem;
+    }
+    
+    .circular-progress svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+    }
+    
+    .circular-progress circle {
+        fill: none;
+        stroke-width: 10;
+        stroke-linecap: round;
+        stroke-dasharray: 283;
+        stroke-dashoffset: 0;
+        transform-origin: center;
+    }
+    
+    .circular-progress .bg {
+        stroke: var(--gray-200);
+    }
+    
+    .circular-progress .progress {
+        stroke: var(--primary-color);
+        transition: stroke-dashoffset 1s ease;
+    }
+    
+    .progress-value {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="hero-bg-shape"></div>
+    <div class="hero-bg-shape-2"></div>
+    <div class="container hero-content">
+        <div class="row align-items-center">
+            <div class="col-lg-6 fade-in">
+                <h1 class="hero-title">Time Bank</h1>
+                <p class="hero-subtitle">Track and manage your teaching and learning hours in our skill exchange economy.</p>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block text-center fade-in-delay-1">
+                <img src="{{ url_for('static', filename='img/timebank-hero.png') }}" alt="Time Bank" class="img-fluid" style="max-height: 300px;" onerror="this.src='https://via.placeholder.com/600x400?text=Time+Bank'; this.onerror='';">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Balance Card -->
+    <div class="time-balance-card" data-aos="fade-up">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h4 class="balance-label">Your Time Bank Balance</h4>
+                <h2 class="balance-value" id="totalBalance">12.5</h2>
+                <p>Available hours to spend on learning</p>
+            </div>
+            <div class="col-md-6">
+                <div class="balance-details">
+                    <div class="balance-detail-item">
+                        <h3 class="balance-detail-value" id="earnedHours">20.0</h3>
+                        <p class="balance-detail-label">Hours Earned</p>
+                    </div>
+                    <div class="balance-detail-item">
+                        <h3 class="balance-detail-value" id="spentHours">7.5</h3>
+                        <p class="balance-detail-label">Hours Spent</p>
+                    </div>
+                    <div class="balance-detail-item">
+                        <h3 class="balance-detail-value" id="sessionCount">15</h3>
+                        <p class="balance-detail-label">Sessions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistics Row -->
+    <div class="row" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="card-body">
+                    <div class="stats-icon text-primary">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="stats-value">8</div>
+                    <div class="stats-label">Teaching Sessions</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="card-body">
+                    <div class="stats-icon text-success">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="stats-value">7</div>
+                    <div class="stats-label">Learning Sessions</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stats-card">
+                <div class="card-body">
+                    <div class="circular-progress">
+                        <svg>
+                            <circle class="bg" cx="60" cy="60" r="45"></circle>
+                            <circle class="progress" cx="60" cy="60" r="45" style="stroke-dashoffset: 105;"></circle>
+                        </svg>
+                        <div class="progress-value">63%</div>
+                    </div>
+                    <div class="stats-label">Teaching/Learning Ratio</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row mt-4">
+        <!-- Transaction Filters -->
+        <div class="col-lg-4">
+            <div class="card transaction-card" data-aos="fade-right">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter Transactions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="dateRangeStart" class="form-label">From</label>
+                        <input type="date" class="form-control" id="dateRangeStart">
+                    </div>
+                    <div class="mb-3">
+                        <label for="dateRangeEnd" class="form-label">To</label>
+                        <input type="date" class="form-control" id="dateRangeEnd">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Transaction Type</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="earned" id="earnedType" checked>
+                            <label class="form-check-label" for="earnedType">
+                                Hours Earned (Teaching)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="spent" id="spentType" checked>
+                            <label class="form-check-label" for="spentType">
+                                Hours Spent (Learning)
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="adjustment" id="adjustmentType" checked>
+                            <label class="form-check-label" for="adjustmentType">
+                                System Adjustments
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-grid">
+                        <button type="button" class="btn btn-primary" id="filterTransactionsBtn">
+                            <i class="fas fa-check me-2"></i> Apply Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats Card -->
+            <div class="card transaction-card mt-4" data-aos="fade-right" data-aos-delay="100">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>This Month</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <p class="mb-0 text-muted">Hours Earned</p>
+                            <h4 class="text-success">4.5</h4>
+                        </div>
+                        <div>
+                            <p class="mb-0 text-muted">Hours Spent</p>
+                            <h4 class="text-danger">2.0</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Monthly Balance</label>
+                        <div class="progress" style="height: 10px;">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 69%;" aria-valuenow="69" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <div class="d-flex justify-content-between mt-1">
+                            <small class="text-muted">+2.5 hours</small>
+                            <small class="text-muted">Net Positive</small>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="#" class="btn btn-sm btn-outline-primary">View Monthly Report</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Transactions List -->
+        <div class="col-lg-8">
+            <div class="card transaction-card" data-aos="fade-left">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-history me-2"></i>Transaction History</h5>
+                </div>
+                
+                <!-- Transaction Filter Buttons -->
+                <div class="transaction-filter mx-3 mt-3">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="earned">Earned</button>
+                    <button class="filter-btn" data-filter="spent">Spent</button>
+                    <button class="filter-btn" data-filter="adjustment">Adjustments</button>
+                    <div class="flex-grow-1 text-end">
+                        <small class="text-muted">Showing 25 of 56 transactions</small>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="transaction-list">
+                        <!-- Credit Transaction -->
+                        <div class="transaction-item">
+                            <div class="transaction-icon credit-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h6 class="transaction-title">JavaScript Fundamentals Session</h6>
+                                <p class="transaction-details">
+                                    <i class="far fa-clock me-1"></i> Oct 15, 2023, 3:00 PM
+                                    <i class="fas fa-user ms-2 me-1"></i> With: Sarah Johnson
+                                </p>
+                            </div>
+                            <div class="transaction-amount credit-amount">
+                                +1.5h
+                            </div>
+                        </div>
+                        
+                        <!-- Debit Transaction -->
+                        <div class="transaction-item">
+                            <div class="transaction-icon debit-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h6 class="transaction-title">Web Design Basics Session</h6>
+                                <p class="transaction-details">
+                                    <i class="far fa-clock me-1"></i> Oct 10, 2023, 2:00 PM
+                                    <i class="fas fa-user ms-2 me-1"></i> With: Emily Chen
+                                </p>
+                            </div>
+                            <div class="transaction-amount debit-amount">
+                                -1.5h
+                            </div>
+                        </div>
+                        
+                        <!-- Credit Transaction -->
+                        <div class="transaction-item">
+                            <div class="transaction-icon credit-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h6 class="transaction-title">Python Programming Tutorial</h6>
+                                <p class="transaction-details">
+                                    <i class="far fa-clock me-1"></i> Oct 8, 2023, 4:30 PM
+                                    <i class="fas fa-user ms-2 me-1"></i> With: Michael Brown
+                                </p>
+                            </div>
+                            <div class="transaction-amount credit-amount">
+                                +2.0h
+                            </div>
+                        </div>
+                        
+                        <!-- Adjustment Transaction -->
+                        <div class="transaction-item">
+                            <div class="transaction-icon adjustment-icon">
+                                <i class="fas fa-sync-alt"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h6 class="transaction-title">New User Bonus</h6>
+                                <p class="transaction-details">
+                                    <i class="far fa-clock me-1"></i> Oct 5, 2023, 10:00 AM
+                                    <i class="fas fa-tag ms-2 me-1"></i> System Adjustment
+                                </p>
+                            </div>
+                            <div class="transaction-amount credit-amount">
+                                +2.0h
+                            </div>
+                        </div>
+                        
+                        <!-- Debit Transaction -->
+                        <div class="transaction-item">
+                            <div class="transaction-icon debit-icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h6 class="transaction-title">Spanish Language Practice</h6>
+                                <p class="transaction-details">
+                                    <i class="far fa-clock me-1"></i> Oct 3, 2023, 1:00 PM
+                                    <i class="fas fa-user ms-2 me-1"></i> With: Carlos Rodriguez
+                                </p>
+                            </div>
+                            <div class="transaction-amount debit-amount">
+                                -1.0h
+                            </div>
+                        </div>
+                        
+                        <!-- Credit Transaction -->
+                        <div class="transaction-item">
+                            <div class="transaction-icon credit-icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div class="transaction-info">
+                                <h6 class="transaction-title">Calculus Tutoring Session</h6>
+                                <p class="transaction-details">
+                                    <i class="far fa-clock me-1"></i> Oct 1, 2023, 5:00 PM
+                                    <i class="fas fa-user ms-2 me-1"></i> With: David Wilson
+                                </p>
+                            </div>
+                            <div class="transaction-amount credit-amount">
+                                +2.0h
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <nav class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize time bank functionality
+        initializeTimeBank();
+        
+        // Set up filter buttons
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('.filter-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                // Apply filter
+                filterTransactions(this.getAttribute('data-filter'));
+            });
+        });
+        
+        // Apply filter button
+        document.getElementById('filterTransactionsBtn').addEventListener('click', function() {
+            applyAdvancedFilter();
+        });
+    });
+    
+    function initializeTimeBank() {
+        // In a real application, you would fetch this data from your API
+        // For now, we'll use the pre-rendered content in the HTML
+        
+        // Example of how to handle a successful API response:
+        /*
+        fetch('/api/timebank/balance', {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+            }
+        })
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to load time bank data');
+            return response.json();
+        })
+        .then(data => {
+            // Update balance information
+            document.getElementById('totalBalance').textContent = data.total.toFixed(1);
+            document.getElementById('earnedHours').textContent = data.earned.toFixed(1);
+            document.getElementById('spentHours').textContent = data.spent.toFixed(1);
+            document.getElementById('sessionCount').textContent = data.sessions;
+            
+            // Update progress circle
+            updateCircularProgress(data.ratio * 100);
+        })
+        .catch(error => {
+            console.error('Error loading time bank data:', error);
+            showAlert('Failed to load time bank data. Please try again.', 'danger');
+        });
+        */
+        
+        // For demo purposes, let's update the circular progress with a fixed value
+        updateCircularProgress(63);
+    }
+    
+    function updateCircularProgress(percentage) {
+        const circle = document.querySelector('.circular-progress .progress');
+        const radius = circle.r.baseVal.value;
+        const circumference = 2 * Math.PI * radius;
+        
+        // Calculate stroke-dashoffset
+        const offset = circumference - (percentage / 100) * circumference;
+        
+        // Apply to the circle
+        circle.style.strokeDasharray = `${circumference} ${circumference}`;
+        circle.style.strokeDashoffset = offset;
+        
+        // Update percentage text
+        document.querySelector('.progress-value').textContent = `${Math.round(percentage)}%`;
+    }
+    
+    function filterTransactions(filter) {
+        // In a real application, you would fetch filtered data from your API
+        // For now, we'll just show a message in the console
+        console.log(`Filtering transactions by: ${filter}`);
+        
+        // Example implementation:
+        const items = document.querySelectorAll('.transaction-item');
+        
+        items.forEach(item => {
+            const icon = item.querySelector('.transaction-icon');
+            
+            if (filter === 'all') {
+                item.style.display = 'flex';
+                return;
+            }
+            
+            if (filter === 'earned' && icon.classList.contains('credit-icon')) {
+                item.style.display = 'flex';
+            } else if (filter === 'spent' && icon.classList.contains('debit-icon')) {
+                item.style.display = 'flex';
+            } else if (filter === 'adjustment' && icon.classList.contains('adjustment-icon')) {
+                item.style.display = 'flex';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    }
+    
+    function applyAdvancedFilter() {
+        // Get filter values
+        const startDate = document.getElementById('dateRangeStart').value;
+        const endDate = document.getElementById('dateRangeEnd').value;
+        const earnedChecked = document.getElementById('earnedType').checked;
+        const spentChecked = document.getElementById('spentType').checked;
+        const adjustmentChecked = document.getElementById('adjustmentType').checked;
+        
+        // In a real application, you would fetch filtered data from your API
+        // For now, we'll just show a message in the console
+        console.log('Advanced filter applied with:', {
+            startDate,
+            endDate,
+            types: {
+                earned: earnedChecked,
+                spent: spentChecked,
+                adjustment: adjustmentChecked
+            }
+        });
+        
+        // Show success message
+        showAlert('Filters applied successfully!', 'success');
+    }
+</script>
+{% endblock %} 
